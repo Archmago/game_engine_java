@@ -1,7 +1,11 @@
 package engine;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 public class Game extends Canvas implements Runnable {
@@ -18,6 +22,9 @@ public class Game extends Canvas implements Runnable {
 	private Thread thread;
 	private boolean isRunning;
 	private final double FPS_LIMIT = 60.0;
+	private BufferStrategy bs;
+	private Graphics g;
+	private BufferedImage screen;
 	
 	// Setup window / game
 	public Game() {
@@ -29,8 +36,12 @@ public class Game extends Canvas implements Runnable {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		
+		screen = new BufferedImage(WIDTH * SCALE, HEIGHT * SCALE, BufferedImage.TYPE_INT_RGB);
+		
 	}
 	
+	// Thread Control
 	public synchronized void start() {
 		thread = new Thread(this);
 		isRunning = true;
@@ -40,11 +51,26 @@ public class Game extends Canvas implements Runnable {
 		
 	}
 	
+	// Game elements update, render
 	public void update() {
 		
 	}
 	public void render() {
+		bs = this.getBufferStrategy();
+		if(bs == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
+		g = screen.getGraphics();
+		g.setColor(new Color(0, 0, 0));
+		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		
+		// All Entities, tiles, etc...
+		
+		
+		g = bs.getDrawGraphics();
+		g.drawImage(screen, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		bs.show();
 	}
 	
 	// Game loop
@@ -62,6 +88,7 @@ public class Game extends Canvas implements Runnable {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
+			
 			if(delta >= 1) {
 				update();
 				render();

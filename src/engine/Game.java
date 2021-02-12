@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.JFrame;
+import components.Player;
+import components.Entity;
 
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -26,8 +29,12 @@ public class Game extends Canvas implements Runnable {
 	private Graphics g;
 	private BufferedImage screen;
 	
-	// Setup window / game
+	// Game Components
+	private Player player;
+	private ArrayList<Entity> entities;
+	
 	public Game() {
+		// Setup window
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		frame = new JFrame("Game Engine");
 		frame.add(this);
@@ -36,9 +43,12 @@ public class Game extends Canvas implements Runnable {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		
 		screen = new BufferedImage(WIDTH * SCALE, HEIGHT * SCALE, BufferedImage.TYPE_INT_RGB);
 		
+		// Setup Game
+		player = new Player();
+		entities = new ArrayList<Entity>();
+		entities.add(player);
 	}
 	
 	// Thread Control
@@ -48,12 +58,19 @@ public class Game extends Canvas implements Runnable {
 		thread.start();
 	}
 	public synchronized void stop() {
-		
+		isRunning = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// Game elements update, render
 	public void update() {
-		
+		for(int i = 0; i < entities.size(); i++) {
+			entities.get(i).update();
+		}
 	}
 	public void render() {
 		bs = this.getBufferStrategy();
@@ -66,7 +83,9 @@ public class Game extends Canvas implements Runnable {
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		
 		// All Entities, tiles, etc...
-		
+		for(int i = 0; i < entities.size(); i++) {
+			entities.get(i).render();
+		}
 		
 		g = bs.getDrawGraphics();
 		g.drawImage(screen, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
@@ -102,6 +121,7 @@ public class Game extends Canvas implements Runnable {
 				timer += 1000;
 			}
 		}
+		stop();
 	}
 	
 	// Start Game / thread

@@ -34,6 +34,7 @@ public class Game extends Canvas implements Runnable {
 	private ArrayList<Entity> entities;
 	
 	public Game() {
+		
 		// Setup window
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		frame = new JFrame("Game Engine");
@@ -99,22 +100,18 @@ public class Game extends Canvas implements Runnable {
 		double amontOfUpdates = FPS_LIMIT;
 		double ns = 1000000000 / amontOfUpdates;
 		double delta = 0;
-		
 		int frames = 0;
 		double timer = System.currentTimeMillis();
-		
 		while(isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			
 			if(delta >= 1) {
 				update();
 				render();
 				frames++;
 				delta--;
 			}
-			
 			if(System.currentTimeMillis() - timer >= 1000) {
 				System.out.println("FPS: " + frames);
 				frames = 0;

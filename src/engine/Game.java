@@ -47,7 +47,7 @@ public class Game extends Canvas implements Runnable {
 		screen = new BufferedImage(WIDTH * SCALE, HEIGHT * SCALE, BufferedImage.TYPE_INT_RGB);
 		
 		// Setup Game
-		player = new Player();
+		player = new Player(10, 10, 10, 20);
 		entities = new ArrayList<Entity>();
 		entities.add(player);
 	}
@@ -82,10 +82,11 @@ public class Game extends Canvas implements Runnable {
 		g = screen.getGraphics();
 		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+		g.setColor(new Color(255, 255, 255));
 		
 		// All Entities, tiles, etc...
 		for(int i = 0; i < entities.size(); i++) {
-			entities.get(i).render();
+			entities.get(i).render(g);
 		}
 		
 		g = bs.getDrawGraphics();

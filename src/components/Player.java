@@ -8,6 +8,7 @@ public class Player extends Entity {
 		super(x, y, height, width);
 	}
 	
+	@Override
 	public void update() {
 		this.setX(getX() + 1);
 		this.setY(getY() + 1);
